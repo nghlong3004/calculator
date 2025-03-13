@@ -1,6 +1,5 @@
 package calculator.com.nghlong3004.server.service;
 
-
 import calculator.com.nghlong3004.server.exceptions.AlgebraException;
 import calculator.com.nghlong3004.server.model.Algebra;
 
@@ -12,9 +11,19 @@ public class ServiceAlgebra {
   public ServiceAlgebra() {
     algebra = new Algebra();
   }
-
+  
   public double[][] getMatrixAns() {
     return matrixAns;
+  }
+
+  public void initMatrix(int n, int m, double[][] matrix) {
+    double newMatrix[][] = new double[n][m];
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
+        newMatrix[i][j] = matrix[i][j];
+      }
+    }
+    insertMatrix(newMatrix);
   }
 
   public void setMatrixAns(double[][] matrix) {
@@ -126,11 +135,15 @@ public class ServiceAlgebra {
     return matrix;
   }
 
-  public double[][] pow(double[][] matrixA, int b) {
-    double[][] matrix = new double[getRow(matrixA)][getColumn(matrixA)];
+  public double[][] pow(double[][] matrixA, int b) throws AlgebraException {
+    int n = getRow(matrixA), m = getColumn(matrixA);
+    if (n != m) {
+      throw new AlgebraException("not square matrix");
+    }
+    double[][] matrix = identity(n);
     while (b > 0) {
       if ((b & 1) == 1) {
-        matrix = multiply(matrix, matrixA);
+        matrix = multiply(matrixA, matrix);
       }
       matrixA = multiply(matrixA, matrixA);
       b >>= 1;
